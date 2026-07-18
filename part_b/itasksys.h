@@ -31,6 +31,7 @@ class ITaskSystem {
         ITaskSystem(int num_threads);
         virtual ~ITaskSystem();
         virtual const char* name() = 0;
+        
 
         /*
           Executes a bulk task launch of num_total_tasks.  Task

@@ -546,6 +546,7 @@ TestResults simpleTest(ITaskSystem* t, bool do_async) {
             value = SimpleMultiplyTask::multiply_task(3, value);
 
         int expected = value;
+        
         if (array[i] != expected) {
             results.passed = false;
             printf("%d: %d expected=%d\n", i, array[i], expected);
