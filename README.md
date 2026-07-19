@@ -3,7 +3,7 @@
 
 
 ## Overview ##
-This is an implementation of assignment 2 from cs149 to build understanding and compare different designs. While Part A is simple - threads work independently and we just count when do all the threads reach the other end of task . Then we put threads to rest. Spawn & Spin are written in Part B . Sleeping is in Part A. 
+This is an implementation of assignment 2 from cs149 to build understanding and compare different designs. While Part A is simple - threads work independently and we just count when do all the threads reach the other end of task . Then we put threads to rest. Spawn,Spin are implemented for PART A and asynchronous for PART B. Code is written in part_b folder only. 
 
 ## PART B ## 
 
