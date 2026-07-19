@@ -21,4 +21,5 @@ In part B, first is a system design which work with two parallel high level impl
 2. Choice of Hashmap is good when there are large number of tasks but may be costly when tasks are fewer due to non-cache locality.
 3. When a task become ready,in taskpusher, for each dependent task we check same task again and again.Use of dependency graph can perform better.
 4. Too many moving variables at the same time ->> have to manage all of them making the system more complex.
+5. No sleep is controlled using Control Variables.
 
