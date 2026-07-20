@@ -24,3 +24,9 @@ In part B, first is a system design which work with two parallel high level impl
 5. No sleep is controlled using Control Variables.
 6. Cache performance-> a deque has fixed memory locations for each state, when different cores hit the cache -they upload it casuing cache bouncing.It can be improved using padding of objects
 
+## Desing d2 and d3 ##
+These designs are different from design 1. Show 15% performance improvement on an average. It store dependency in parent state and do not use hash maps. It does not have waiting thread and any thread which completes a task would check dependency of other tasks.If any of the child task has dependencies equal to zero - add that into ready queue where it is processed by executors(threads). d2 is completely lock style  and d3 is a trial to make if lockfree. However due to atomic contention and cache bouncing d3 does not show much improvement of d2. 
+
+This is a very general work to build understanding and test how each factor effect performance.However there are few clear winners :
+1. Use of Dependency graph inside state of parent saving its children and when parent task removed it will check delete dependency count on children by one.
+2. Fewer mtx & atomic variables takes far less effort to execute than a complex design which provide hardly any improvement.
