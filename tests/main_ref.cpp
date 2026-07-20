@@ -5,6 +5,8 @@
 #include <assert.h>
 
 #include "tasksys_ref.h"
+#include "tasksys_d1.h"  /// only part B
+#include "tasksys_d2.h"  /// only part B 
 #include "tests.h"
 
 #define DEFAULT_NUM_THREADS 8

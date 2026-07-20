@@ -15,8 +15,31 @@
  * serial task execution engine.  See definition of ITaskSystem in
  * itasksys.h for documentation of the ITaskSystem interface.
  */
-
 using namespace std;
+struct  state{
+    int taskID;
+    int total_tasks;
+    IRunnable* runner;
+    atomic<int> index;
+    atomic<int> score;
+    state(int tid,int tt,IRunnable* runn):taskID(tid),total_tasks(tt),runner(runn),index(0),score(0){}
+    state(const state& other){
+        this->taskID=other.taskID;
+        this->total_tasks=other.total_tasks;
+        this->runner=other.runner;
+        this->index.store(0);
+        this->score.store(0);
+    }
+    state& operator=(const state&other){
+        this->taskID=other.taskID;
+        this->total_tasks=other.total_tasks;
+        this->runner=other.runner;
+        this->index.store(0);
+        this->score.store(0);
+        return *this;
+    }
+    };
+    
 
 class TaskSystemSerial: public ITaskSystem {
     public:
@@ -89,86 +112,40 @@ class TaskSystemParallelThreadPoolSpinning: public ITaskSystem {
  * a thread pool. See definition of ITaskSystem in
  * itasksys.h for documentation of the ITaskSystem interface.
  */
+class TaskSystemParallelThreadPoolSleeping: public ITaskSystem {
+    public:
+        TaskSystemParallelThreadPoolSleeping(int num_threads);
+        ~TaskSystemParallelThreadPoolSleeping();
+        const char* name();
+
+        void run(IRunnable* runnable, int num_total_tasks);
+        void waiting();
+        void execute(int threadID);
+        void atomic_flow(state &s);
+        TaskID runAsyncWithDeps(IRunnable* runnable, int num_total_tasks,
+                                const std::vector<TaskID>& deps);
+        void sync();
+        
+        unordered_map<int,unordered_set<int>> store;
+        vector<bool> ready; /// will always increase with tasks -like each task would do it false;
+        vector<state> inwait;/// in inwait & ready and store , the location would automatically be taskID
+        std::deque<state> toprocess;
+        std::thread taskpusher;
+        int num_threads_;
+        atomic<bool> done;
+        vector<std::thread>workers;
+        int curr;
+        std::mutex mtx_ready,mtx_store,mtx_inwait,mtx_process ;
+        atomic<int> global_counter;
+        atomic<int> sizeP_;
+
+        
+        atomic<int> completed;
+        atomic<int> demanded;
+        
+        /// after first problem we find it never reached there
 
 
-struct state {
-    TaskID taskID;
-    int total_tasks;
-    IRunnable* runner;
-    atomic<int> finished_subtasks;
-    atomic<int> remaining_deps;
-    std::vector<TaskID> dependents;
-    atomic<int> indexer;
-
-
-    state(TaskID id, int total, IRunnable* runnable)
-        : taskID(id),
-          total_tasks(total),
-          runner(runnable),
-          finished_subtasks(0),
-          remaining_deps(0),indexer(0) {
-    }
-
-    state(const state&) = delete;
-    state& operator=(const state&) = delete;
 };
 
-struct WorkItem {
-    state* group;
-   
-
-    WorkItem(state* task_group = NULL)
-        : group(task_group)
-         {
-    }
-};
-
-class TaskSystemParallelThreadPoolSleeping : public ITaskSystem {
-public:
-    TaskSystemParallelThreadPoolSleeping(int num_threads);
-    ~TaskSystemParallelThreadPoolSleeping();
-
-    const char* name();
-
-    void run(
-        IRunnable* runnable,
-        int num_total_tasks
-    );
-
-    TaskID runAsyncWithDeps(
-        IRunnable* runnable,
-        int num_total_tasks,
-        const std::vector<TaskID>& deps
-    );
-
-    void sync();
-
-private:
-    // --- declaration order matches the .cpp initializer list below ---
-    // (C++ always initializes members in declaration order, not
-    // initializer-list order, so keeping these aligned avoids
-    // -Wreorder / -Werror failures and keeps the two files easy to
-    // read side by side.)
-
-    int num_threads_;
-    bool shutdown;
-    TaskID curr;
-    int demanded;
-    atomic<int> completed;
-
-    std::vector<std::unique_ptr<state> > states;
-    std::vector<bool> ready;
-    std::deque<WorkItem> ready_queue;
-    std::vector<std::thread> workers;
-    atomic<int> global_counter;
-    
-    std::mutex mtx_process;
-    std::condition_variable cv_work;
-    std::condition_variable cv_sync;
-
-    void execute(int thread_id);
-    void atomic_flow(state& task);
-    void enqueue_group_locked(state& task);
-    void complete_group_locked(state& task);
-};
 #endif

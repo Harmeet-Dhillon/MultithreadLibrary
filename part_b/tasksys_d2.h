@@ -16,7 +16,7 @@
  * itasksys.h for documentation of the ITaskSystem interface.
  */
 
-using namespace std;
+    
 
 class TaskSystemSerial: public ITaskSystem {
     public:
@@ -95,18 +95,16 @@ struct state {
     TaskID taskID;
     int total_tasks;
     IRunnable* runner;
-    atomic<int> finished_subtasks;
-    atomic<int> remaining_deps;
+    int finished_subtasks;
+    int remaining_deps;
     std::vector<TaskID> dependents;
-    atomic<int> indexer;
-
 
     state(TaskID id, int total, IRunnable* runnable)
         : taskID(id),
           total_tasks(total),
           runner(runnable),
           finished_subtasks(0),
-          remaining_deps(0),indexer(0) {
+          remaining_deps(0) {
     }
 
     state(const state&) = delete;
@@ -115,11 +113,11 @@ struct state {
 
 struct WorkItem {
     state* group;
-   
+    int task_index;
 
-    WorkItem(state* task_group = NULL)
-        : group(task_group)
-         {
+    WorkItem(state* task_group = NULL, int index = -1)
+        : group(task_group),
+          task_index(index) {
     }
 };
 
@@ -144,30 +142,24 @@ public:
     void sync();
 
 private:
-    // --- declaration order matches the .cpp initializer list below ---
-    // (C++ always initializes members in declaration order, not
-    // initializer-list order, so keeping these aligned avoids
-    // -Wreorder / -Werror failures and keeps the two files easy to
-    // read side by side.)
-
+  
     int num_threads_;
     bool shutdown;
     TaskID curr;
     int demanded;
-    atomic<int> completed;
+    int completed;
 
     std::vector<std::unique_ptr<state> > states;
     std::vector<bool> ready;
-    std::deque<WorkItem> ready_queue;
+    std::queue<WorkItem> ready_queue;
     std::vector<std::thread> workers;
-    atomic<int> global_counter;
-    
+
     std::mutex mtx_process;
     std::condition_variable cv_work;
     std::condition_variable cv_sync;
 
     void execute(int thread_id);
-    void atomic_flow(state& task);
+    void atomic_flow(state& task, int task_index);
     void enqueue_group_locked(state& task);
     void complete_group_locked(state& task);
 };
