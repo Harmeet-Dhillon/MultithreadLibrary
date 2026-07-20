@@ -30,3 +30,7 @@ These designs are different from design 1. Show 15% performance improvement on a
 This is a very general work to build understanding and test how each factor effect performance.However there are few clear winners :
 1. Use of Dependency graph inside state of parent saving its children and when parent task removed it will check delete dependency count on children by one.
 2. Fewer mtx & atomic variables takes far less effort to execute than a complex design which provide hardly any improvement.
+
+
+<img width="1536" height="1024" alt="d3" src="https://github.com/user-attachments/assets/74c3d74c-94d1-453a-800c-43454de83c58" />
+
