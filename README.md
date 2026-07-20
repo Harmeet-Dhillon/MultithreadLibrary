@@ -22,4 +22,5 @@ In part B, first is a system design which work with two parallel high level impl
 3. When a task become ready,in taskpusher, for each dependent task we check same task again and again.Use of dependency graph can perform better.
 4. Too many moving variables at the same time ->> have to manage all of them making the system more complex.
 5. No sleep is controlled using Control Variables.
+6. Cache performance-> a deque has fixed memory locations for each state, when different cores hit the cache -they upload it casuing cache bouncing.It can be improved using padding of objects
 
