@@ -7,7 +7,7 @@ This is an implementation of assignment 2 from cs149 to build understanding of p
 
 ## PART B ## 
 
-In part B, first is a system design which work with two parallel high level implementations. In which one takes care of when to put the ready task to processing list and other thread pool solve the problem. It has many drawbacks which are shown after the visual representation of the system design. 
+In part B, first is a system design which work with two parallel high level implementations. In which one takes care of when to put the ready task to processing list and other thread pool solve the problem. It has many drawbacks which are shown after the visual representation of the system design. The diagram shown below is for design 1 -->> tasksys_d1.cpp in code.
 
 <img width="1536" height="1024" alt="sys1" src="https://github.com/user-attachments/assets/3c781d89-af84-4de0-b047-422fe23948b9" />
 
