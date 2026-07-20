@@ -3,7 +3,7 @@
 
 
 ## Overview ##
-This is an implementation of assignment 2 from cs149 to build understanding of parallel execution.As this is written as general framework,the design would change depending upon application.There are many strengths and flaws in this design which are listed below. While Part A is simple - threads work independently and we just count when do all the threads reach the other end of task . Then we put threads to rest. Spawn,Spin are implemented for PART A and asynchronous for PART B. Code is written in part_b folder only. 
+This is an implementation of assignment 2 from cs149 to build understanding of parallel execution.As this is written as general framework,the design would change depending upon application.There are many strengths and flaws in this design which are listed below. While Part A is simple - threads work independently and we just count when do all the threads reach the other end of task . Then we put threads to rest. Spawn,Spin are implemented for PART A and asynchronous for PART B. Code is written in part_b folder only.Result- speed ~10x.
 
 ## PART B ## 
 
